@@ -14,18 +14,76 @@ public class App
 
     public static void main(String[] args)
     {
-        System.out.println("Hello");
+        String target = "hello world";
+        if(args.length != 0)
+            target = args[0];
+
+        System.out.println("Target: " + target);
+
+        ArrayList<String> gen = initialise(target.length(), 100);
+        String best = gen.get(0);
+
+        while(!best.equals(target))
+        {
+            gen = select(gen, target);
+            best = gen.get(0);
+            System.out.println(best);
+            gen = breed(gen);
+        }
+    }
+
+
+    public static ArrayList<String> initialise(int wordLength, int popSize)
+    {
+        ArrayList<String> population = new ArrayList<>();
+
+        for(int i = 0; i < popSize; i++)
+        {
+            population.add(randomWord(wordLength));
+        }
+        return population;
+    }
+
+
+    public static String randomWord(int length)
+    {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < length; i++)
+        {
+            sb.append(alphabet[ (int) (Math.random() * alphabet.length) ]);
+        }
+        return sb.toString();
+    }
+
+
+    public static ArrayList<String> breed(ArrayList<String> population)
+    {
+        ArrayList<String> new_pop = new ArrayList<>();
+        for(int i = 0; i < population.size(); i++)
+        {
+            for(int j = 0; j < population.size(); j++)
+            {
+                if(i == j)
+                    new_pop.add(population.get(i));
+                else
+                    new_pop.add(mutate(crossover(population.get(i), population.get(j))));
+            }
+        }
+        return new_pop;
     }
 
 
     public static String crossover(String s1, String s2)
     {
-        int mid = (int) (Math.random() * s1.length());
-
-        if(Math.random() > 0.5)
-            return s1.substring(0, mid) + s1.substring(mid);
-
-        return s2.substring(0, mid) + s1.substring(mid);
+        char[] child = new char[s1.length()];
+        for(int i = 0; i < child.length; i++)
+        {
+            if(Math.random() > 0.5)
+                child[i] = s1.charAt(i);
+            else
+                child[i] = s2.charAt(i);
+        }
+        return String.valueOf(child);
     }
 
 
@@ -47,10 +105,16 @@ public class App
 
     public static ArrayList<String> select(ArrayList<String> population, String target)
     {
+        PriorityQueue<ScoredString> queue = new PriorityQueue<>();
+        population.forEach(string -> queue.add(new ScoredString(string, evaluate(string, target))));
 
-        
-
-        return null;
+        ArrayList<String> best = new ArrayList<>();
+        int n = population.size() / 10;
+        for(int i = 0; i < n; i++)
+        {
+            best.add(queue.poll().string);
+        }
+        return best;
     }
 
 
@@ -68,9 +132,4 @@ public class App
         return score;
     }
 
-
-    public static ArrayList<String> breed(ArrayList<String> population)
-    {
-        return null;
-    }
 }
