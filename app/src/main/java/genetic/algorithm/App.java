@@ -3,15 +3,74 @@
  */
 package genetic.algorithm;
 
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+
 public class App
 {
-    public String getGreeting()
-    {
-        return "Hello World!";
-    }
+
+    private static double alpha = 0.01;  // Mutation Rate
+    private static char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',' '};
 
     public static void main(String[] args)
     {
-        System.out.println(new App().getGreeting());
+        System.out.println("Hello");
+    }
+
+
+    public static String crossover(String s1, String s2)
+    {
+        int mid = (int) (Math.random() * s1.length());
+
+        if(Math.random() > 0.5)
+            return s1.substring(0, mid) + s1.substring(mid);
+
+        return s2.substring(0, mid) + s1.substring(mid);
+    }
+
+
+    public static  String mutate(String s)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        char[] chars = s.toCharArray();
+        for(char c: chars)
+        {
+            if(Math.random() < alpha)
+                sb.append(alphabet[ (int) (Math.random() * alphabet.length) ]);
+            else
+                sb.append(c);
+        }
+        return sb.toString();
+    }
+
+
+    public static ArrayList<String> select(ArrayList<String> population, String target)
+    {
+
+        
+
+        return null;
+    }
+
+
+    public static int evaluate(String string, String target)
+    {
+        char[] s_chars = string.toCharArray();
+        char[] t_chars = target.toCharArray();
+
+        int score = 0;
+        for(int i = 0; i < s_chars.length; i++)
+        {
+            if(s_chars[i] == t_chars[i])
+                score++;
+        }
+        return score;
+    }
+
+
+    public static ArrayList<String> breed(ArrayList<String> population)
+    {
+        return null;
     }
 }
